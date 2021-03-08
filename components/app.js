@@ -17,34 +17,6 @@ class DynamicTable {
         this.tableId = id;
     }
 
-    extendTableData(placeholder) {
-
-        function extend(array, by, placeholder) {
-            for (let i=0; i<by; i++) {
-                array.push(placeholder);
-            }
-        }
-        // when row lengths don't match, extend the short rows to match the longest row with a placeholder value
-
-        // find the longest row
-        let longestRowLength = -1;
-        for (let i=0; i<this.tableData.length; i++) {
-            longestRowLength = this.tableData[i].length > longestRowLength ? this.tableData[i].length : longestRowLength; 
-        }
-
-        // extend the row by the difference between it's length and the longest row length
-        for (let i=0; i<this.tableData.length; i++) {
-            let currentRowLength = this.tableData[i].length;
-            let row_length_difference = longestRowLength - currentRowLength;
-
-            if (row_length_difference > 0) {
-                extend(this.tableData[i], row_length_difference, placeholder);
-            }
-        }
-
-
-    }
-
     fillTableHeaders(columnHeaders, thead) {
         for (let i=0; i<columnHeaders.length; i++) {
             let th = document.createElement('th');
@@ -55,10 +27,11 @@ class DynamicTable {
 
     fillTableBody(tableData, tbody, columnCount) {
 
-        this.extendTableData('');
         
         for (let row=0; row<tableData.length; row++) {
             let tr = document.createElement('tr');
+            let current_row_length = tableData[row].length;
+
 
             // only add a column if a column header is present
             let limiter = columnCount < tableData[row].length ? columnCount : tableData[row].length;
@@ -67,6 +40,12 @@ class DynamicTable {
                 td.textContent = tableData[row][col];
                 tr.appendChild(td);
             }
+            // add on placeholders for 'missing' data elements
+            for (let i=0; i<this.columnHeaders.length - current_row_length; i++) {
+                let td = document.createElement('td');
+                tr.appendChild(td);
+            }
+
             tbody.appendChild(tr);
         }
     }
@@ -107,7 +86,7 @@ const tableData = [
     [1, 'george', 'washington', '1790'],
     [2, 'john', 'adams'],
     [3, 'thomas', 'jefferson', '1810'],
-    [4, 'chris'],
+    [4, 'chris', 'torok', '2024'],
 ];
 
 const USPresidents = new DynamicTable(columnHeaders, tableData);
