@@ -1,10 +1,13 @@
 /* Table data - data that drives the table construction */
 
 // mock data
-let columnTitles = ['a', 'b'];
+let columnTitles = ['number', 'first name', 'last name', 'year'];
 let tableData = [
-    [1, 2], // index 0
-    [3, 4], // index 1
+    [1, 'george', 'washington', '1789-1796'],
+    [2, 'john', 'adams', '1797-1801'],
+    [3, 'thomas', 'jefferson', '1801-1809'],
+    [4, 'james', 'madison', '1809-1817'],
+    [5, 'james', 'monroe', '1817-1825'],
 ];
 
 function fillTableHeaders(titles, thead) {
@@ -15,10 +18,13 @@ function fillTableHeaders(titles, thead) {
     }
 }
 
-function fillTableBody(array2d, tbody) {
+function fillTableBody(array2d, tbody, rowDataLimit) {
     for (let row=0; row<array2d.length; row++) {
         let tr = document.createElement('tr');
-        for (let col=0; col<array2d[row].length; col++) {
+
+        let limiter = rowDataLimit < array2d[row].length ? rowDataLimit : array2d[row].length;
+
+        for (let col=0; col<limiter; col++) {
             let td = document.createElement('td');
             td.textContent = array2d[row][col];
             tr.appendChild(td);
@@ -28,24 +34,22 @@ function fillTableBody(array2d, tbody) {
 }
 
 function buildTableComponents(titles, tableData2dArray, name) {
-    // create a table element
     const table = document.createElement('table');
     table.setAttribute('id', `${name}`);
     table.classList.add('u-full-width');
-    // create thead section
+    
     const thead = document.createElement('thead');
     // fill thead section with data from titles array
     fillTableHeaders(titles, thead);
     // create tbody section
     const tbody = document.createElement('tbody');
     // fill tbody with data from tableData2dArray
-    fillTableBody(tableData2dArray, tbody);
+    fillTableBody(tableData2dArray, tbody, titles.length);
     // attach the thead as child to table
-    // attach the tbody as child to table
-    // attach table to the DOM
     table.appendChild(thead);
+    // attach the tbody as child to table
     table.appendChild(tbody);
-
+    
     return table;
 }
 
@@ -57,4 +61,12 @@ function displayTable(titles, data, tableName) {
     const tableArea = document.querySelector('#table-area');
     tableArea.appendChild(label);
     tableArea.appendChild(table);
+}
+
+
+displayTable(columnTitles, tableData, 'US Presidents');
+
+
+class DynamicTable {
+    
 }
